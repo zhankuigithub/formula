@@ -281,10 +281,10 @@ export default {
     computed: {
         getSpecialFieldOptions() {
             return (field) => {
-                const fieldType = this.getFieldType(field);
+                const fieldType = this.getFieldType(field)
                 if (fieldType === 'enum') {
                     // 根据字段的值在 enumOptionsMap 中查找对应的选项
-                    const enumValues = this.enumOptionsMap[field];
+                    const enumValues = this.enumOptionsMap[field]
                     if (enumValues) {
                         return Object.keys(enumValues).map((value) => ({
                             label: enumValues[value],
@@ -308,7 +308,7 @@ export default {
         // 根据字段类型动态生成运算符选项
         getOperatorOptions() {
             return (field) => {
-                const fieldType = this.getFieldType(field);
+                const fieldType = this.getFieldType(field)
                 switch (fieldType) {
                     case 'number':
                         return this.operatorOptions.filter(
@@ -322,9 +322,9 @@ export default {
                                 option.value === 'is not null' ||
                                 option.value === 'is null' ||
                                 option.value === 'between'
-                        );
+                        )
                     case 'string':
-                        return this.operatorOptions.filter((option) => option.value === '=' || option.value === '<>');
+                        return this.operatorOptions.filter((option) => option.value === '=' || option.value === '<>')
                     case 'date':
                         return this.operatorOptions.filter(
                             (option) =>
@@ -334,7 +334,7 @@ export default {
                                 option.value === 'is not null' ||
                                 option.value === 'is null' ||
                                 option.value === 'between'
-                        );
+                        )
                     case 'datetime':
                         return this.operatorOptions.filter(
                             (option) =>
@@ -343,7 +343,7 @@ export default {
                                 option.value === 'is not null' ||
                                 option.value === 'is null' ||
                                 option.value === 'between'
-                        );
+                        )
                     default:
                         return this.operatorOptions.filter((option) => option.value === '=')
                 }
@@ -355,18 +355,18 @@ export default {
             immediate: true,
             deep: true,
             handler() {
-                this.generateExpression();
+                this.generateExpression()
                 this.$emit('input', this.expression, this.logic)
             }
         }
     },
     methods: {
         handleMouseEnter(groupIndex, index) {
-            this.hoveredGroupIndex = groupIndex;
+            this.hoveredGroupIndex = groupIndex
             this.hoveredConditionIndex = index
         },
         handleMouseLeave() {
-            this.hoveredGroupIndex = -1;
+            this.hoveredGroupIndex = -1
             this.hoveredConditionIndex = -1
         },
         // 切换连接符
@@ -385,23 +385,23 @@ export default {
                 }
                 // 如果字段尚未被使用，则保留
                 return true
-            });
+            })
 
             if (unusedFields.length === 1) {
                 this.disabledAdd = true
             }
             // 如果存在尚未被使用的字段，则选择第一个字段
-            const field = unusedFields[0].value;
+            const field = unusedFields[0].value
 
-            const operatorOptions = this.getOperatorOptions(field);
-            const defaultOperator = operatorOptions.length > 0 ? operatorOptions[0].value : '';
+            const operatorOptions = this.getOperatorOptions(field)
+            const defaultOperator = operatorOptions.length > 0 ? operatorOptions[0].value : ''
 
-            let value = null;
-            let valueMax = null;
+            let value = null
+            let valueMax = null
 
             // 检查字段类型是否为特殊字段类型
             if (this.isSpecialFieldType(field)) {
-                const specialOptions = this.getSpecialFieldOptions(field);
+                const specialOptions = this.getSpecialFieldOptions(field)
                 // 如果存在特殊字段选项，则将值设置为第一个选项的值
                 if (specialOptions.length > 0) {
                     value = [specialOptions[0].value]
@@ -416,9 +416,9 @@ export default {
             })
         },
         removeCondition(groupIndex, conditionIndex) {
-            const group = this.logic.groups[groupIndex];
+            const group = this.logic.groups[groupIndex]
             // 删除条件
-            group.conditions.splice(conditionIndex, 1);
+            group.conditions.splice(conditionIndex, 1)
             // 检查当前组中条件的数量是否为0
             if (group.conditions.length === 0) {
                 // 删除当前条件组
@@ -437,22 +437,22 @@ export default {
                     }
                 }
                 return true
-            });
+            })
 
             if (unusedFields.length === 1) {
                 this.disabledAdd = true
             }
-            const field = unusedFields[0].value;
+            const field = unusedFields[0].value
 
-            const operatorOptions = this.getOperatorOptions(field);
-            const defaultOperator = operatorOptions.length > 0 ? operatorOptions[0].value : '';
+            const operatorOptions = this.getOperatorOptions(field)
+            const defaultOperator = operatorOptions.length > 0 ? operatorOptions[0].value : ''
 
-            let value = null;
-            let valueMax = null;
+            let value = null
+            let valueMax = null
 
             // 检查字段类型是否为特殊字段类型
             if (this.isSpecialFieldType(field)) {
-                const specialOptions = this.getSpecialFieldOptions(field);
+                const specialOptions = this.getSpecialFieldOptions(field)
                 // 如果存在特殊字段选项，则将值设置为第一个选项的值
                 if (specialOptions.length > 0) {
                     value = [specialOptions[0].value]
@@ -476,20 +476,20 @@ export default {
         },
         generateExpression() {
             if (this.logic.groups.length === 0) {
-                this.expression = '';
+                this.expression = ''
                 return
             }
-            const firstConditionGroupConnector = this.logic.connector;
+            const firstConditionGroupConnector = this.logic.connector
             this.expression = this.logic.groups
                 .map((conditionGroup, index) => {
-                    const firstConditionConnector = conditionGroup.connector;
+                    const firstConditionConnector = conditionGroup.connector
                     const conditionsExpression = conditionGroup.conditions
                         .map((condition, index) => {
                             if (condition.operator === 'is null' || condition.operator === 'is not null') {
                                 return `${condition.field} ${condition.operator}`
                             } else {
-                                let value = condition.value;
-                                let valueMax = condition.valueMax;
+                                let value = condition.value
+                                let valueMax = condition.valueMax
 
                                 if (condition.operator === 'between') {
                                     if (this.isDateField(condition.field)) {
@@ -503,10 +503,10 @@ export default {
                                         (condition.operator === '=' || condition.operator === '<>') &&
                                         value.includes(',')
                                     ) {
-                                        const values = value.split(',').map((val) => val.trim());
+                                        const values = value.split(',').map((val) => val.trim())
                                         // 检查字段类型，决定使用 IN 还是普通等于操作符
-                                        const fieldIsString = this.getFieldType(condition.field) === 'string';
-                                        const operator = condition.operator === '=' ? 'in' : 'not in';
+                                        const fieldIsString = this.getFieldType(condition.field) === 'string'
+                                        const operator = condition.operator === '=' ? 'in' : 'not in'
                                         if (fieldIsString) {
                                             // 字符串类型字段，需要给每个值加上引号
                                             value = `(${values.map((val) => `'${val}'`).join(',')})`
@@ -516,7 +516,7 @@ export default {
                                         }
                                         return `${condition.field} ${operator} ${value}`
                                     } else {
-                                        let fieldType = this.getFieldType(condition.field);
+                                        let fieldType = this.getFieldType(condition.field)
                                         if (condition.operator === 'like' || condition.operator === 'not like') {
                                             value = `'%${value}%'`
                                         } else if (
@@ -531,7 +531,7 @@ export default {
                                 return `${condition.field} ${condition.operator} ${value}`
                             }
                         })
-                        .join(` ${firstConditionConnector} `);
+                        .join(` ${firstConditionConnector} `)
                     return `(${conditionsExpression}) ${
                         index !== this.logic.groups.length - 1 ? firstConditionGroupConnector : ''
                     }`
@@ -539,11 +539,11 @@ export default {
                 .join('')
         },
         getFieldType(field) {
-            const fieldOption = this.fieldOptions.find((option) => option.value === field);
+            const fieldOption = this.fieldOptions.find((option) => option.value === field)
             return fieldOption ? fieldOption.type : 'unknown'
         },
         getPlaceholder(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             if (fieldType === 'string') {
                 return '请输入值'
             } else if (fieldType === 'number') {
@@ -565,19 +565,19 @@ export default {
             }
         },
         isDateField(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             return fieldType === 'date' || fieldType === 'datetime'
         },
         getDateType(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             return fieldType === 'date' ? 'date' : 'datetime'
         },
         getDateFormat(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             return fieldType === 'date' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'
         },
         getValueFormat(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             return fieldType === 'date' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'
         },
         showValueInput(condition) {
@@ -588,18 +588,18 @@ export default {
         },
         clearValue(condition) {
             // 根据字段类型获取可选择的运算符选项
-            const operatorOptions = this.getOperatorOptions(condition.field);
+            const operatorOptions = this.getOperatorOptions(condition.field)
             // 如果存在运算符选项，则将运算符赋值为第一个选项的值
             if (operatorOptions && operatorOptions.length > 0) {
                 condition.operator = operatorOptions[0].value
             }
-            condition.value = '';
+            condition.value = ''
             condition.valueMax = ''
         },
         editValue(condition, groupIndex, index) {
-            this.editingGroupIndex = groupIndex;
-            this.editingConditionIndex = index;
-            this.open = true;
+            this.editingGroupIndex = groupIndex
+            this.editingConditionIndex = index
+            this.open = true
             this.editorContent = condition.value
         },
         handleSaveRichTextEditor(content) {
@@ -621,11 +621,11 @@ export default {
                 city: '城市',
                 district: '区县',
                 enum: '枚举'
-            };
+            }
             return typeMap[type] || '未知类型'
         },
         isSpecialFieldType(field) {
-            const fieldType = this.getFieldType(field);
+            const fieldType = this.getFieldType(field)
             return fieldType === 'province' || fieldType === 'city' || fieldType === 'district' || fieldType === 'enum'
         },
         isOptionDisabled(value) {
@@ -640,7 +640,7 @@ export default {
             return false // 如果没有找到已选择的值，则将选项设置为可用
         },
         getValidationRules(condition) {
-            let rules = [{ required: true, message: ' ', trigger: 'blur' }];
+            let rules = [{ required: true, message: ' ', trigger: 'blur' }]
             if (this.isSpecialFieldType(condition.field)) {
                 rules = [{ required: true, message: ' ', trigger: 'change' }]
             }

@@ -24,7 +24,7 @@
 
 <script>
 export default {
-    name: "RichTextEditor",
+    name: 'RichTextEditor',
     props: {
         open: {
             type: Boolean,
@@ -57,8 +57,8 @@ export default {
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     // 将换行符转换为英文逗号并返回给父组件
-                    const contentWithCommas = this.formattedEditorContent.replace(/\n/g, ',');
-                    this.$emit('save', contentWithCommas);
+                    const contentWithCommas = this.formattedEditorContent.replace(/\n/g, ',')
+                    this.$emit('save', contentWithCommas)
                     this.cancel()
                 }
             })
