@@ -151,4 +151,7 @@ export default {
 <style>
 #app {
 }
+.el-form-item {
+    height: 13px;
+}
 </style>
